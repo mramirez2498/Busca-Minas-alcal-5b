@@ -6,7 +6,6 @@ import pprint
 from functools import partial
 from tkinter import messagebox
 
-
 tabla = []
 lista_minas = []
 
