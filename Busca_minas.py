@@ -1,8 +1,6 @@
-import tkinter
 from tkinter import *
 from tkinter import ttk
 import random
-from tkinter import PhotoImage
 from functools import partial
 from tkinter import messagebox
 from PIL import Image,ImageTk
@@ -19,7 +17,16 @@ class Pantalla_inicio:
         self.ls_des['values'] = opciones
         self.boton = ttk.Button(text="Jugar", command=self.iniciarJuego)
         self.boton.place(x=80, y=100)
+        self.f20 = Frame(self.ventana1, width=250,height=150)
+        self.f20.config(bg="snow")
+        self.f20.config(bd=2)
+        self.f20.config(relief="ridge")
+        self.f20.pack(side="top")
+        img = PhotoImage(file = "minero.png")
+        men_img = Label(self.f20, image = img)
+        men_img.pack()
         self.ventana1.mainloop()
+
         
 
     def iniciarJuego(self):
@@ -35,7 +42,7 @@ class Pantalla_inicio:
         ancho = alto
         cant_minas = (alto * ancho) // 5
         t = Tablero(alto,ancho,cant_minas)
-            
+
 class Tablero:
     
     def __init__(self, alt , anc, nas):
