@@ -4,31 +4,33 @@ import random
 from functools import partial
 from tkinter import messagebox
 from PIL import Image,ImageTk
+from playsound import playsound
 
 class Pantalla_inicio:
     
     def __init__(self):
         self.ventana1 = Tk()
         self.ventana1.title("Dificultad")
-        self.ventana1.geometry('250x150')
+        self.ventana1.geometry('350x370')
         self.ls_des = ttk.Combobox(self.ventana1, width=17)
-        self.ls_des.place(x=48, y=77)
+        self.ls_des.place(x=100, y=310)
         opciones = ["Facil(5x5)", "Medio(15x15)", "Avanzado(30x30)"]
         self.ls_des['values'] = opciones
         self.boton = ttk.Button(text="Jugar", command=self.iniciarJuego)
-        self.boton.place(x=80, y=100)
+        self.boton.place(x=130, y=330)
         self.f20 = Frame(self.ventana1, width=250,height=150)
         self.f20.config(bg="snow")
         self.f20.config(bd=2)
         self.f20.config(relief="ridge")
         self.f20.pack(side="top")
-        img = PhotoImage(file = "minero.png")
+        img = PhotoImage(file = "bomba.png")
         men_img = Label(self.f20, image = img)
         men_img.pack()
         self.ventana1.mainloop()
-
+        self.play
+        self.playsounds
         
-
+     
     def iniciarJuego(self):
         self.boton
         nivel = self.ls_des.get()
@@ -42,7 +44,8 @@ class Pantalla_inicio:
         ancho = alto
         cant_minas = (alto * ancho) // 5
         t = Tablero(alto,ancho,cant_minas)
-
+    
+  
 class Tablero:
     
     def __init__(self, alt , anc, nas):
@@ -54,7 +57,7 @@ class Tablero:
         self.lista_minas = []
         self.cant_minas = nas
         self.sortear_minas()
-        img = Image.open('bandera.jpg')
+        img = Image.open('bandera.png')
         img = img.resize((38,38), Image.Resampling.LANCZOS)
         print(img)
         self.imagen = ImageTk.PhotoImage(img, master = self.ventana)
@@ -64,10 +67,11 @@ class Tablero:
         for j in range(0, self.alto):
                 self.lista = []
                 for i in range(0, self.ancho):
-                    boton = tkinter.Button(self.ventana, height=2, width=2, command=partial(self.apretar, j, i))
+                    boton = Button(self.ventana, height=2, width=2, command=partial(self.apretar, j, i))
                     boton.grid(row=j, column=i)
                     boton.bind("<Button-3>", partial(self.click_derec, j, i))
                     self.lista.append(boton)
+                    
                 self.tabla.append(self.lista)
         self.ventana.mainloop()
         
@@ -75,7 +79,7 @@ class Tablero:
     def apretar(self, j, i):
         while self.hay_minas(j,i) and self.conteo == 0: #si hay una minas la primera vez que tocas, sortea de nuevo
                     self.lista_minas = []
-                    self.sortear_minas()
+                    self.sorter_minas()
         texto = self.tabla[j][i].cget("text")
         if not texto and self.gano == 0:
             self.minas = 0
@@ -93,7 +97,7 @@ class Tablero:
                 else:
                     b.config(text="")
                     
-                b.config(relief=tkinter.SUNKEN)
+                b.config(relief=SUNKEN)
                 b.config(bg='silver')
                 
     def sortear_minas(self):
@@ -124,7 +128,7 @@ class Tablero:
                 self.tabla[j][i].config(text="", image = "", height=2, width=2)
             else:
                 self.tabla[j][i].config(text = "P", image=self.imagen, height=38, width=38)
-            
+                
             
 if __name__ == "__main__":
     juego = Pantalla_inicio()
