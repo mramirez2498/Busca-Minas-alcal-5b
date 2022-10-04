@@ -4,31 +4,26 @@ import random
 from functools import partial
 from tkinter import messagebox
 from PIL import Image,ImageTk
-from playsound import playsound
+from datetime import datetime
 
 class Pantalla_inicio:
     
     def __init__(self):
         self.ventana1 = Tk()
         self.ventana1.title("Dificultad")
-        self.ventana1.geometry('350x370')
+        self.ventana1.geometry('350x300') #Tamaño de la pantalla de inicio
         self.ls_des = ttk.Combobox(self.ventana1, width=17)
-        self.ls_des.place(x=100, y=310)
+        self.ls_des.place(x=100, y=235) #Posicion de la lista desplegable
         opciones = ["Facil(5x5)", "Medio(15x15)", "Avanzado(30x30)"]
         self.ls_des['values'] = opciones
         self.boton = ttk.Button(text="Jugar", command=self.iniciarJuego)
-        self.boton.place(x=130, y=330)
+        self.boton.place(x=130, y=260) #Posicion del boton "jugar"
         self.f20 = Frame(self.ventana1, width=250,height=150)
-        self.f20.config(bg="snow")
-        self.f20.config(bd=2)
-        self.f20.config(relief="ridge")
-        self.f20.pack(side="top")
+        self.f20.pack(side="top") #Posicion de la imagen 
         img = PhotoImage(file = "bomba.png")
         men_img = Label(self.f20, image = img)
         men_img.pack()
         self.ventana1.mainloop()
-        self.play
-        self.playsounds
         
      
     def iniciarJuego(self):
@@ -129,6 +124,41 @@ class Tablero:
             else:
                 self.tabla[j][i].config(text = "P", image=self.imagen, height=38, width=38)
                 
-            
-if __name__ == "__main__":
-    juego = Pantalla_inicio()
+class Cronometro:
+    
+    def __init__(self)
+    
+    hora_inicio = datetime.now()
+
+    def segundos_a_segundos_minutos_y_horas(segundos):
+        horas = int(segundos / 60 / 60)
+        segundos -= horas*60*60
+        minutos = int(segundos/60)
+        segundos -= minutos*60
+        return f"{horas:02d}:{minutos:02d}:{segundos:02d}"
+
+    def obtener_tiempo_transcurrido_formateado():
+        segundos_transcurridos= (datetime.now() - hora_inicio).total_seconds()
+        return segundos_a_segundos_minutos_y_horas(int(segundos_transcurridos))
+
+
+    def refrescar_tiempo_transcurrido():
+        print("Refrescando!")
+        variable_hora_actual.set(obtener_tiempo_transcurrido_formateado())
+        raiz.after(INTERVALO_REFRESCO, refrescar_tiempo_transcurrido)
+
+
+    raiz = tk.Tk()
+    variable_hora_actual = tk.StringVar(raiz, value=obtener_tiempo_transcurrido_formateado())
+    raiz.etiqueta = tk.Label(
+        raiz, textvariable=variable_hora_actual, font=f"Consolas 60")
+    raiz.etiqueta.pack(side="top")
+    app = tk.Frame()
+    raiz.title("Cronómetro con Tkinter - By Parzibyte")
+    refrescar_tiempo_transcurrido()
+    app.pack()
+    app.mainloop()
+                
+                
+    if __name__ == "__main__":
+        juego = Pantalla_inicio()
