@@ -4,7 +4,7 @@ import random
 from functools import partial
 from tkinter import messagebox
 from PIL import Image,ImageTk
-from datetime import datetime
+import time
 
 class Pantalla_inicio:
     
@@ -24,7 +24,6 @@ class Pantalla_inicio:
         men_img = Label(self.f20, image = img)
         men_img.pack()
         self.ventana1.mainloop()
-        
      
     def iniciarJuego(self):
         self.boton
@@ -39,7 +38,6 @@ class Pantalla_inicio:
         ancho = alto
         cant_minas = (alto * ancho) // 5
         t = Tablero(alto,ancho,cant_minas)
-    
   
 class Tablero:
     
@@ -69,31 +67,40 @@ class Tablero:
                     
                 self.tabla.append(self.lista)
         self.ventana.mainloop()
-        
 
     def apretar(self, j, i):
-        while self.hay_minas(j,i) and self.conteo == 0: #si hay una minas la primera vez que tocas, sortea de nuevo
-                    self.lista_minas = []
-                    self.sorter_minas()
-        texto = self.tabla[j][i].cget("text")
-        if not texto and self.gano == 0:
-            self.minas = 0
-            b = self.tabla[j][i]
-            if self.hay_minas(j, i):
-                print("perdio")
-                self.gano=1
-                self.ventana.withdraw()
-                messagebox.showinfo( message="Mejor suerte para la proxima :)", title="Perdiste")
-            else:
-                self.conteo +=1
-                self.minas = self.contar_minas(j, i)
-                if self.minas > 0:
-                    b.config(text=self.minas)
+        
+        if i>=0 and i<self.ancho and j>=0 and j<self.alto and self.tabla[j][i].cget("relief") == RAISED:
+            print(f"row:{j} col:{i}")
+            while self.hay_minas(j,i) and self.conteo == 0: #si hay una minas la primera vez que tocas, sortea de nuevo
+                self.lista_minas = []
+                self.sortear_minas()
+            texto = self.tabla[j][i].cget("text")
+            if not texto and self.gano == 0:
+                minas = 0
+                b = self.tabla[j][i]
+                if self.hay_minas(j, i):
+                    print("perdio")
+                    self.gano=1
+                    self.ventana.withdraw()
+                    messagebox.showinfo( message="Mejor suerte para la proxima :)", title="Perdiste")
                 else:
-                    b.config(text="")
-                    
-                b.config(relief=SUNKEN)
-                b.config(bg='silver')
+                    b.config(relief=SUNKEN)
+                    b.config(bg='silver')
+                    self.conteo +=1
+                    minas = self.contar_minas(j, i)
+                    if minas > 0:
+                        b.config(text=minas)
+                    else:
+                        b.config(text="")
+                        self.apretar(j,i+1)
+                        self.apretar(j,i-1)
+                        self.apretar(j+1, i)
+                        self.apretar(j-1, i)
+                        self.apretar(j+1, i+1)
+                        self.apretar(j-1, i-1)
+                        self.apretar(j+1, i-1)
+                        self.apretar(j-1, i+1)
                 
     def sortear_minas(self):
         while len(self.lista_minas) < self.cant_minas:
@@ -106,59 +113,24 @@ class Tablero:
         return self.lista_minas
 
     def contar_minas(self, x, y):
-        self.minas = 0
+        minas = 0
         for a in range(x - 1, x + 2):
             for b in range(y - 1, y + 2):
                 if [a, b] in self.lista_minas:
-                    self.minas += 1
-        return self.minas
+                    minas += 1
+        return minas
 
     def hay_minas(self, x, y):
         return [x, y] in self.lista_minas
 
     def click_derec(self, j, i, event):
-        if self.gano == 0:
-            texto = self.tabla[j][i].cget("text")
-            if texto:
-                self.tabla[j][i].config(text="", image = "", height=2, width=2)
-            else:
-                self.tabla[j][i].config(text = "P", image=self.imagen, height=38, width=38)
-                
-class Cronometro:
-    
-    def __init__(self)
-    
-    hora_inicio = datetime.now()
-
-    def segundos_a_segundos_minutos_y_horas(segundos):
-        horas = int(segundos / 60 / 60)
-        segundos -= horas*60*60
-        minutos = int(segundos/60)
-        segundos -= minutos*60
-        return f"{horas:02d}:{minutos:02d}:{segundos:02d}"
-
-    def obtener_tiempo_transcurrido_formateado():
-        segundos_transcurridos= (datetime.now() - hora_inicio).total_seconds()
-        return segundos_a_segundos_minutos_y_horas(int(segundos_transcurridos))
-
-
-    def refrescar_tiempo_transcurrido():
-        print("Refrescando!")
-        variable_hora_actual.set(obtener_tiempo_transcurrido_formateado())
-        raiz.after(INTERVALO_REFRESCO, refrescar_tiempo_transcurrido)
-
-
-    raiz = tk.Tk()
-    variable_hora_actual = tk.StringVar(raiz, value=obtener_tiempo_transcurrido_formateado())
-    raiz.etiqueta = tk.Label(
-        raiz, textvariable=variable_hora_actual, font=f"Consolas 60")
-    raiz.etiqueta.pack(side="top")
-    app = tk.Frame()
-    raiz.title("Cronómetro con Tkinter - By Parzibyte")
-    refrescar_tiempo_transcurrido()
-    app.pack()
-    app.mainloop()
-                
-                
-    if __name__ == "__main__":
-        juego = Pantalla_inicio()
+        if self.tabla[j][i].cget("relief") == RAISED:
+            if self.gano == 0:
+                texto = self.tabla[j][i].cget("text")
+                if texto:
+                    self.tabla[j][i].config(text="", image = "", height=2, width=2)
+                else:
+                    self.tabla[j][i].config(text = "P", image=self.imagen, height=38, width=38)               
+            
+if __name__ == "__main__":
+    juego = Pantalla_inicio()
