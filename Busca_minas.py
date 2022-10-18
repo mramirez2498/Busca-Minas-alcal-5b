@@ -12,9 +12,10 @@ class Pantalla_inicio:
         self.ventana1 = Tk()
         self.ventana1.title("Dificultad")
         self.ventana1.geometry('350x300') #Tamaño de la pantalla de inicio
-        self.ls_des = ttk.Combobox(self.ventana1, width=17)
+        self.ls_des = ttk.Combobox(self.ventana1, width=17, state='readonly')
+        self.ls_des.set ('Facil(5x5)')
         self.ls_des.place(x=100, y=235) #Posicion de la lista desplegable
-        opciones = ["Facil(5x5)", "Medio(15x15)", "Avanzado(30x30)"]
+        opciones = ["Facil(5x5)", "Medio(15x15)", "Avanzado(20x20)"]
         self.ls_des['values'] = opciones
         self.boton = ttk.Button(text="Jugar", command=self.iniciarJuego)
         self.boton.place(x=130, y=260) #Posicion del boton "jugar"
@@ -31,7 +32,7 @@ class Pantalla_inicio:
         niveles = {
             'Facil(5x5)': 5,
             'Medio(15x15)': 15,
-            'Avanzado(30x30)': 30
+            'Avanzado(20x20)': 20
         }
 
         alto = niveles[nivel]
@@ -52,9 +53,9 @@ class Tablero:
         self.sortear_minas()
         img = Image.open('bandera.png')
         img = img.resize((38,38), Image.Resampling.LANCZOS)
-        print(img)
+        #print(img)
         self.imagen = ImageTk.PhotoImage(img, master = self.ventana)
-        print(self.imagen)
+        #print(self.imagen)
         self.gano =  0 # 0=jugando 1=perdio 2= gano
         self.conteo = 0
         for j in range(0, self.alto):
@@ -64,14 +65,14 @@ class Tablero:
                     boton.grid(row=j, column=i)
                     boton.bind("<Button-3>", partial(self.click_derec, j, i))
                     self.lista.append(boton)
-                    
                 self.tabla.append(self.lista)
         self.ventana.mainloop()
-
+        
+        
     def apretar(self, j, i):
         
         if i>=0 and i<self.ancho and j>=0 and j<self.alto and self.tabla[j][i].cget("relief") == RAISED:
-            print(f"row:{j} col:{i}")
+            #print(f"row:{j} col:{i}")
             while self.hay_minas(j,i) and self.conteo == 0: #si hay una minas la primera vez que tocas, sortea de nuevo
                 self.lista_minas = []
                 self.sortear_minas()
@@ -80,7 +81,7 @@ class Tablero:
                 minas = 0
                 b = self.tabla[j][i]
                 if self.hay_minas(j, i):
-                    print("perdio")
+                    #print("perdio")
                     self.gano=1
                     self.ventana.withdraw()
                     messagebox.showinfo( message="Mejor suerte para la proxima :)", title="Perdiste")
@@ -109,7 +110,7 @@ class Tablero:
             l = [x, y]
             if l not in self.lista_minas:
                 self.lista_minas.append(l)
-        print(self.lista_minas)
+        #print(self.lista_minas)
         return self.lista_minas
 
     def contar_minas(self, x, y):
