@@ -5,10 +5,12 @@ from functools import partial
 from tkinter import messagebox
 from PIL import Image,ImageTk
 import time
+from cronometro import Cronometro
 
 class Pantalla_inicio:
     
     def __init__(self):
+        
         self.ventana1 = Tk()
         self.ventana1.title("Dificultad")
         self.ventana1.geometry('350x300') #Tamaño de la pantalla de inicio
@@ -51,6 +53,11 @@ class Tablero:
         self.lista_minas = []
         self.cant_minas = nas
         self.sortear_minas()
+        self.frameContador = Frame(self.ventana)
+        self.frameBotones = Frame(self.ventana)
+        self.frameContador.grid(column=0, row=0)
+        self.frameBotones.grid(column=0, row=1)
+        self.cron = Cronometro(self.frameContador)
         img = Image.open('bandera.png')
         img = img.resize((38,38), Image.Resampling.LANCZOS)
         #print(img)
@@ -61,7 +68,7 @@ class Tablero:
         for j in range(0, self.alto):
                 self.lista = []
                 for i in range(0, self.ancho):
-                    boton = Button(self.ventana, height=2, width=2, command=partial(self.apretar, j, i))
+                    boton = Button(self.frameBotones, height=2, width=2, command=partial(self.apretar, j, i))
                     boton.grid(row=j, column=i)
                     boton.bind("<Button-3>", partial(self.click_derec, j, i))
                     self.lista.append(boton)
@@ -131,7 +138,8 @@ class Tablero:
                 if texto:
                     self.tabla[j][i].config(text="", image = "", height=2, width=2)
                 else:
-                    self.tabla[j][i].config(text = "P", image=self.imagen, height=38, width=38)               
+                    self.tabla[j][i].config(text = "P", image=self.imagen, height=38, width=38)
+                    
             
 if __name__ == "__main__":
     juego = Pantalla_inicio()
