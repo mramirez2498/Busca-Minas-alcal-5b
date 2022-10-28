@@ -58,8 +58,9 @@ class Tablero:
         self.frameContador.grid(column=0, row=0)
         self.frameBotones.grid(column=0, row=1)
         self.cron = Cronometro(self.frameContador)
+        self.ventana.resizable(0,0)
         img = Image.open('bandera.png')
-        img = img.resize((38,38), Image.Resampling.LANCZOS)
+        img = img.resize((30,30), Image.Resampling.LANCZOS) #Tamaño de la imagen de bandera
         #print(img)
         self.imagen = ImageTk.PhotoImage(img, master = self.ventana)
         #print(self.imagen)
@@ -68,7 +69,7 @@ class Tablero:
         for j in range(0, self.alto):
                 self.lista = []
                 for i in range(0, self.ancho):
-                    boton = Button(self.frameBotones, height=2, width=2, command=partial(self.apretar, j, i))
+                    boton = Button(self.frameBotones, height=1, width=1, command=partial(self.apretar, j, i))
                     boton.grid(row=j, column=i)
                     boton.bind("<Button-3>", partial(self.click_derec, j, i))
                     self.lista.append(boton)
@@ -88,7 +89,6 @@ class Tablero:
                 minas = 0
                 b = self.tabla[j][i]
                 if self.hay_minas(j, i):
-                    #print("perdio")
                     self.gano=1
                     self.ventana.withdraw()
                     messagebox.showinfo( message="Mejor suerte para la proxima :)", title="Perdiste")
@@ -136,9 +136,9 @@ class Tablero:
             if self.gano == 0:
                 texto = self.tabla[j][i].cget("text")
                 if texto:
-                    self.tabla[j][i].config(text="", image = "", height=2, width=2)
+                    self.tabla[j][i].config(text="", image = "", height=1, width=1)#tamaño del boton bandera vacia
                 else:
-                    self.tabla[j][i].config(text = "P", image=self.imagen, height=38, width=38)
+                    self.tabla[j][i].config(text = "P", image=self.imagen, height=25, width=25) #Tamaño del boton bandera
                     
             
 if __name__ == "__main__":
