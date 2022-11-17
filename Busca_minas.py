@@ -26,6 +26,7 @@ class Pantalla_inicio:
         img = PhotoImage(file = "bomba.png")
         men_img = Label(self.f20, image = img)
         men_img.pack()
+        self.ventana1.resizable(0,0)
         self.ventana1.mainloop()
      
     def iniciarJuego(self):
@@ -52,6 +53,7 @@ class Tablero:
         self.tabla = []
         self.lista_minas = []
         self.cant_minas = nas
+        self.casill_rest = self.alto * self.ancho - self.cant_minas
         self.sortear_minas()
         self.frameContador = Frame(self.ventana)
         self.frameBotones = Frame(self.ventana)
@@ -76,9 +78,8 @@ class Tablero:
                 self.tabla.append(self.lista)
         self.ventana.mainloop()
         
-        
     def apretar(self, j, i):
-        
+        tiempo = self.cron.obtener_tiempo_transcurrido_formateado()
         if i>=0 and i<self.ancho and j>=0 and j<self.alto and self.tabla[j][i].cget("relief") == RAISED:
             #print(f"row:{j} col:{i}")
             while self.hay_minas(j,i) and self.conteo == 0: #si hay una minas la primera vez que tocas, sortea de nuevo
@@ -89,11 +90,16 @@ class Tablero:
                 minas = 0
                 b = self.tabla[j][i]
                 if self.hay_minas(j, i):
-                    self.gano=1
+                    print(tiempo)
                     self.ventana.withdraw()
                     messagebox.showinfo( message="Mejor suerte para la proxima :)", title="Perdiste")
                 else:
                     b.config(relief=SUNKEN)
+                    self.casill_rest -= 1
+                    if self.casill_rest == 0:
+                        self.ventana.withdraw()
+                        messagebox.showinfo( message="GG Ganaste, eres el mejor ;D", title="Ganaste")
+                        print(tiempo)
                     b.config(bg='silver')
                     self.conteo +=1
                     minas = self.contar_minas(j, i)
@@ -108,7 +114,8 @@ class Tablero:
                         self.apretar(j+1, i+1)
                         self.apretar(j-1, i-1)
                         self.apretar(j+1, i-1)
-                        self.apretar(j-1, i+1)
+                        self.apretar(j-1, i+1)         
+   # def limitar_banderas(self):
                 
     def sortear_minas(self):
         while len(self.lista_minas) < self.cant_minas:

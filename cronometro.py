@@ -9,7 +9,7 @@ class Cronometro:
         self.raiz = ventana
         self.variable_hora_actual = tk.StringVar(self.raiz, value= self.obtener_tiempo_transcurrido_formateado())
         self.raiz.etiqueta = tk.Label(
-            self.raiz, textvariable= self.variable_hora_actual, font=f"Consolas 60")
+            self.raiz, textvariable= self.variable_hora_actual, font=f"Consolas 15")
         self.raiz.etiqueta.pack(side="top")
         app = tk.Frame()
         self.refrescar_tiempo_transcurrido()
@@ -29,7 +29,6 @@ class Cronometro:
 
 
     def refrescar_tiempo_transcurrido(self):
-        print("Refrescando!")
         self.variable_hora_actual.set(self.obtener_tiempo_transcurrido_formateado())
         self.raiz.after(self.INTERVALO_REFRESCO, self.refrescar_tiempo_transcurrido)
 
