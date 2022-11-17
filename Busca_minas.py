@@ -50,6 +50,7 @@ class Tablero:
         self.ancho = anc
         self.minas = 0
         self.ventana = Tk()
+        self.ventana.title("Buscaminas")
         self.tabla = []
         self.lista_minas = []
         self.cant_minas = nas
